@@ -1,16 +1,20 @@
 require "player"
+require "bullet"
 
 debug = true
 
+-- Initialize Love2D
 function love.load()
-	player = Player:new(300, 200, 150)
+	player = Player:new(300, 400, 150)
 end
 
+-- Update buffer
 function love.update(dt)
-	player:move(dt)
+	player:update(dt)
 end
 
+-- Draw buffer to screen
 function love.draw(dt)
-	love.graphics.setColor(255, 0, 0)
-	love.graphics.rectangle("fill", player.x, player.y, 25, 25)
+	-- Draw Player
+	player.draw(dt)
 end
