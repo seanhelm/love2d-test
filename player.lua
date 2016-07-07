@@ -9,8 +9,10 @@ function Player:new(x, y, speed)
 	player.y = y
 	player.speed = speed
 
+	player.width = 25
+	player.height = 25
+
 	player.bullets = {}
-	player.shootWaitTime = 0
 
 	-- Update Player buffer in love.update(dt)
 	function player:update(dt)
@@ -20,14 +22,15 @@ function Player:new(x, y, speed)
 
 	-- Draw Player to screen in love.draw(dt)
 	function player:draw(dt)
-		love.graphics.setColor(255, 0, 0)
-		love.graphics.rectangle("fill", player.x, player.y, 25, 25)
-
 		-- Draw fired bullets to the screen
 		love.graphics.setColor(0, 255, 0)
 		for i, b in pairs(player.bullets) do
 			love.graphics.rectangle("fill", b.x, b.y, 10, 10)
 		end
+
+		-- Draw Player to the screen
+		love.graphics.setColor(255, 0, 0)
+		love.graphics.rectangle("fill", player.x, player.y, player.width, player.height)
 	end
 
 	-- Check for user input to control Player
@@ -37,7 +40,7 @@ function Player:new(x, y, speed)
 				player.x = player.x - player.speed * dt
 			end
 		elseif love.keyboard.isDown("right") then
-			if player.x < (love.graphics.getWidth() - 25) then
+			if player.x < (love.graphics.getWidth() - player.width) then
 				player.x = player.x + player.speed * dt
 			end
 		end
@@ -47,7 +50,7 @@ function Player:new(x, y, speed)
 				player.y = player.y - player.speed * dt
 			end
 		elseif love.keyboard.isDown("down") then
-			if player.y < (love.graphics.getHeight() - 25) then
+			if player.y < (love.graphics.getHeight() - player.height) then
 				player.y = player.y + player.speed * dt
 			end
 		end
@@ -55,8 +58,6 @@ function Player:new(x, y, speed)
 
 	-- Fire bullets
 	function player:shoot(dt)
-		player.shootWaitTime = player.shootWaitTime - (1 * dt)
-
 		for i, b in pairs(player.bullets) do
 			b:update(dt)
 
@@ -66,17 +67,20 @@ function Player:new(x, y, speed)
 		end
 
 		-- Check Player input to fire bullets
-		if love.keyboard.isDown("d") then
-			table.insert(player.bullets, Bullet:new(player.x, player.y, 15, 15, 300, "right"))
-		elseif love.keyboard.isDown("a") then
-			table.insert(player.bullets, Bullet:new(player.x, player.y, 15, 15, 300, "left"))
-		elseif love.keyboard.isDown("w") then
-			table.insert(player.bullets, Bullet:new(player.x, player.y, 15, 15, 300, "up"))
-		elseif love.keyboard.isDown("s") then
-			table.insert(player.bullets, Bullet:new(player.x, player.y, 15, 15, 300, "down"))
-		end
+		function love.keypressed(key)
+			local bulletX = player.x + (player.width / 2) - 5
+			local bulletY = player.y + (player.height / 2) - 5
 
-		player.shootWaitTime = 0.2
+			if key == "d" then
+				table.insert(player.bullets, Bullet:new(bulletX, bulletY, 15, 15, 300, "right"))
+			elseif key == "a" then
+				table.insert(player.bullets, Bullet:new(bulletX, bulletY, 15, 15, 300, "left"))
+			elseif key == "w" then
+				table.insert(player.bullets, Bullet:new(bulletX, bulletY, 15, 15, 300, "up"))
+			elseif key == "s"  then
+				table.insert(player.bullets, Bullet:new(bulletX, bulletY, 15, 15, 300, "down"))
+			end
+		end
 	end
 
 	return player

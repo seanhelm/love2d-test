@@ -1,3 +1,4 @@
+require "map"
 require "player"
 require "bullet"
 
@@ -5,6 +6,8 @@ debug = true
 
 -- Initialize Love2D
 function love.load()
+    --Map:read("map.txt")
+
 	player = Player:new(300, 400, 150)
 end
 
